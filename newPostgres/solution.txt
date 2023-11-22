@@ -1,10 +1,20 @@
 Students:
-1. Madhan Mohan ()
-2. <Student 2 Full Name> (<Student 2 x500>)
+1. Madhan Mohan (mohan130)
+2. Maurice Yu (yu000464)
 2. Samuel Moerbitz (moerb001)
 
 Brief Summary:
-<A Brief Summary about the change you make (1 paragraph max)>
+
+    Our group make a few changes to implement the LRU2 logic. The first thing we did was alter the buf_internals.h header
+to include a timestamp field in the BufferDesc struct. This would allow the buffers to have their own timestamp. We also 
+declared the global_timestamp here. In the buf_init.c file, we set the timestamps of each buffer to be 0 initially. Next,
+we modified code in ReadBuffer_common() to change a buffer's timestamp when it is read. Here we also increment the global_timestamp.
+The final thing we did was implement the LRU2 logic in StrategyGetBuffer(). We commented out the old Clock Sweep code and 
+added our new logic right below it. 
+
+***IMPORTANT NOTE*** At no point were we able to get the code to print out. Even after a fresh install of PostgreSQL printf
+would not print to the server terminal. I'm unsure why this wouldn't work but our group couldn't fix it. The server seemed
+to build tables just fine.  
 
 Detailed Changes:
 	
@@ -16,7 +26,9 @@ Detailed Changes:
     - line 129: initialized the timestamp in each buffer to 0
 
 3. bufmgr.c: <src/backend/storage/buffer/bufmgr.c>
-    ReadBuffer_common()
+    - line 76: uint32 global_timestamp = 0; declaring the global_timestamp from the 
+
+    Function ReadBuffer_common()
     - line 1107 and 1108: updated buffer timestamp and incremented global_timestamp
         bufHdr->timestamp = global_timestamp;
 		global_timestamp++;
@@ -26,17 +38,5 @@ Detailed Changes:
 
 4. freelist.c: <src/backend/storage/buffer/freelist.c>
     StrategyGetBuffer()
-    - lines 360 to 425: implemented LRU2 and printed out the buffer array contents
-
-
-Changes to files:
-
-buf_init.c:
-    function InitBufferPool()
-        * buf->timestamp = 0; 
-
-bufmgr.c:
-    function ReadBuffer_common: Added 
-        * bufHdr->timestamp = global_timestamp;
-		*  global_timestamp++;
-
+    - lines 360 to 425: Implemented LRU2 in this block. Made sure to comment out Clock Sweep directly above it 
+    and printed out the buffer array contents before returning the victim buffer. 
