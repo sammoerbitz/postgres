@@ -1,0 +1,42 @@
+Students:
+1. Madhan Mohan ()
+2. <Student 2 Full Name> (<Student 2 x500>)
+2. Samuel Moerbitz (moerb001)
+
+Brief Summary:
+<A Brief Summary about the change you make (1 paragraph max)>
+
+Detailed Changes:
+	
+1. buf_internals.h: <src/include/storage/buf_internals.h>
+	- line 252: added uint32 timestamp to BufferDesc struct
+    - line 259: added extern uint32 global_timestamp; 
+
+2. buf_init.c: <src/backend/storage/buffer/buf_init.c>
+    - line 129: initialized the timestamp in each buffer to 0
+
+3. bufmgr.c: <src/backend/storage/buffer/bufmgr.c>
+    ReadBuffer_common()
+    - line 1107 and 1108: updated buffer timestamp and incremented global_timestamp
+        bufHdr->timestamp = global_timestamp;
+		global_timestamp++;
+    - line 1200 and 1201: updated buffer timestamp and incremented global_timestamp
+        bufHdr->timestamp = global_timestamp;
+		global_timestamp++;
+
+4. freelist.c: <src/backend/storage/buffer/freelist.c>
+    StrategyGetBuffer()
+    - lines 360 to 425: implemented LRU2 and printed out the buffer array contents
+
+
+Changes to files:
+
+buf_init.c:
+    function InitBufferPool()
+        * buf->timestamp = 0; 
+
+bufmgr.c:
+    function ReadBuffer_common: Added 
+        * bufHdr->timestamp = global_timestamp;
+		*  global_timestamp++;
+
